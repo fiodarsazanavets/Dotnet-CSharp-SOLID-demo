@@ -2,10 +2,10 @@
 
 namespace TextToHtmlConvertor
 {
-	public class Program
-	{
-       static void Main()
-		{
+    public class Program
+    {
+        static void Main()
+        {
             try
             {
                 Console.WriteLine("Please specify the file to convert to HTML.");
@@ -22,9 +22,9 @@ namespace TextToHtmlConvertor
             }
 
             Console.WriteLine("Press any key to exit.");
-            Console.ReadKey();    
-		}
+            Console.ReadKey();
+        }
 
-        
+
     }
 }
