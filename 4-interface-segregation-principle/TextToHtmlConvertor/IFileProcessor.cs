@@ -1,8 +1,7 @@
-﻿namespace TextToHtmlConvertor
+﻿namespace TextToHtmlConvertor;
+
+public interface IFileProcessor
 {
-    public interface IFileProcessor
-    {
-        string ReadAllText();
-        void WriteToFile(string text);
-    }
+    string ReadAllText();
+    void WriteToFile(string text);
 }

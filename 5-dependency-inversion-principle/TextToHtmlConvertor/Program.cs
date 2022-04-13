@@ -1,52 +1,39 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using TextToHtmlConvertor;
 
-namespace TextToHtmlConvertor
+try
 {
-    class Program
+    Console.WriteLine("Please specify the file to convert to HTML.");
+    var fullFilePath = Console.ReadLine();
+    var fileProcessor = new FileProcessor(fullFilePath);
+    var tagsToReplace = new Dictionary<string, (string, string)>
     {
-        static void Main()
-        {
-            try
-            {
-                Console.WriteLine("Please specify the file to convert to HTML.");
-                var fullFilePath = Console.ReadLine();
+        { "**", ("<strong>", "</strong>") },
+        { "*", ("<em>", "</em>") },
+        { "~~", ("<del>", "</del>") }
+    };
 
-                var fileProcessor = new FileProcessor(fullFilePath);
+    var textProcessor = new MdTextProcessor(tagsToReplace);
+    var coordinator = new TextConversionCoordinator(fileProcessor, textProcessor);
+    var status = coordinator.ConvertText();
 
-                var tagsToReplace = new Dictionary<string, (string, string)>
-                {
-                    { "**", ("<strong>", "</strong>") },
-                    { "*", ("<em>", "</em>") },
-                    { "~~", ("<del>", "</del>") }
-                };
+    Console.WriteLine($"Text extracted from file: {status.TextExtractedFromFile}");
+    Console.WriteLine($"Text converted: {status.TextConverted}");
+    Console.WriteLine($"Output file saved: {status.OutputFileSaved}");
 
-                var textProcessor = new MdTextProcessor(tagsToReplace);
+    if (status.Errors.Count > 0)
+    {
+        Console.WriteLine("The following errors occured during the conversion:");
+        Console.WriteLine(string.Empty);
 
-                var coordinator = new TextConversionCoordinator(fileProcessor, textProcessor);
-                var status = coordinator.ConvertText();
+        foreach (var error in status.Errors)
+            Console.WriteLine(error);
 
-                Console.WriteLine($"Text extracted from file: {status.TextExtractedFromFile}");
-                Console.WriteLine($"Text converted: {status.TextConverted}");
-                Console.WriteLine($"Output file saved: {status.OutputFileSaved}");
-
-                if (status.Errors.Count > 0)
-                {
-                    Console.WriteLine("The following errors occured during the conversion:");
-                    Console.WriteLine(string.Empty);
-
-                    foreach (var error in status.Errors)
-                        Console.WriteLine(error);
-
-                }
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.Message);
-            }
-
-            Console.WriteLine("Press any key to exit.");
-            Console.ReadKey();
-        }
     }
 }
+catch (Exception ex)
+{
+    Console.WriteLine(ex.Message);
+}
+
+Console.WriteLine("Press any key to exit.");
+Console.ReadKey();

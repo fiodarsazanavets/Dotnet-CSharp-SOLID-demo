@@ -1,32 +1,27 @@
-﻿using System.Linq;
-using System.Text;
+﻿using System.Text;
 using System.Text.RegularExpressions;
 
-namespace TextToHtmlConvertor
+namespace TextToHtmlConvertor;
+
+public class TextProcessor
 {
-    public class TextProcessor
+    public virtual string ConvertText(string inputText)
     {
-        private const string openingParagraphTag = "<p>";
-        private const string closingParagraphTag = "</p>";
+        var paragraphs = Regex.Split(inputText, @"(\r\n?|\n)")
+                            .Where(p => p.Any(char.IsLetterOrDigit));
 
-        public virtual string ConvertText(string inputText)
+        var sb = new StringBuilder();
+
+        foreach (var paragraph in paragraphs)
         {
-            var paragraphs = Regex.Split(inputText, @"(\r\n?|\n)")
-                              .Where(p => p.Any(char.IsLetterOrDigit));
+            if (paragraph.Length == 0)
+                continue;
 
-            var sb = new StringBuilder();
-
-            foreach (var paragraph in paragraphs)
-            {
-                if (paragraph.Length == 0)
-                    continue;
-
-                sb.AppendLine(openingParagraphTag + paragraph + closingParagraphTag);
-            }
-
-            sb.AppendLine("<br/>");
-
-            return sb.ToString();
+            sb.AppendLine($"<p>{paragraph}</p>");
         }
+
+        sb.AppendLine("<br/>");
+
+        return sb.ToString();
     }
 }

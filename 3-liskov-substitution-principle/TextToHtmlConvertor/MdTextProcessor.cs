@@ -1,67 +1,64 @@
-﻿using System.Collections.Generic;
+﻿namespace TextToHtmlConvertor;
 
-namespace TextToHtmlConvertor
+public class MdTextProcessor : TextProcessor
 {
-    public class MdTextProcessor : TextProcessor
+    private readonly Dictionary<string, (string, string)> tagsToReplace;
+
+    public MdTextProcessor(Dictionary<string, (string, string)> tagsToReplace)
     {
-        private readonly Dictionary<string, (string, string)> tagsToReplace;
+        this.tagsToReplace = tagsToReplace;
+    }
 
-        public MdTextProcessor(Dictionary<string, (string, string)> tagsToReplace)
+    public string ConvertMdText(string inputText)
+    {
+        var processedText = base.ConvertText(inputText);
+
+        foreach (var key in tagsToReplace.Keys)
         {
-            this.tagsToReplace = tagsToReplace;
+            var replacementTags = tagsToReplace[key];
+
+            if (CountStringOccurrences(processedText, key) % 2 == 0)
+                processedText = ApplyTagReplacement(processedText, key, replacementTags.Item1, replacementTags.Item2);
         }
 
-        public string ConvertMdText(string inputText)
-        {
-            var processedText = base.ConvertText(inputText);
+        return processedText;
+    }
 
-            foreach (var key in tagsToReplace.Keys)
+    private int CountStringOccurrences(string text, string pattern)
+    {
+        int count = 0;
+        int currentIndex = 0;
+        while ((currentIndex = text.IndexOf(pattern, currentIndex)) != -1)
+        {
+            currentIndex += pattern.Length;
+            count++;
+        }
+        return count;
+    }
+
+    private string ApplyTagReplacement(string text, string inputTag, string outputOpeningTag, string outputClosingTag)
+    {
+        int count = 0;
+        int currentIndex = 0;
+
+        while ((currentIndex = text.IndexOf(inputTag, currentIndex)) != -1)
+        {
+            count++;
+
+            if (count % 2 != 0)
             {
-                var replacementTags = tagsToReplace[key];
-
-                if (CountStringOccurrences(processedText, key) % 2 == 0)
-                    processedText = ApplyTagReplacement(processedText, key, replacementTags.Item1, replacementTags.Item1);
+                var prepend = outputOpeningTag;
+                text = text.Insert(currentIndex, prepend);
+                currentIndex += prepend.Length + inputTag.Length;
             }
-
-            return processedText;
-        }
-
-        private int CountStringOccurrences(string text, string pattern)
-        {
-            int count = 0;
-            int currentIndex = 0;
-            while ((currentIndex = text.IndexOf(pattern, currentIndex)) != -1)
+            else
             {
-                currentIndex += pattern.Length;
-                count++;
+                var append = outputClosingTag;
+                text = text.Insert(currentIndex, append);
+                currentIndex += append.Length + inputTag.Length;
             }
-            return count;
         }
 
-        private string ApplyTagReplacement(string text, string inputTag, string outputOpeningTag, string outputClosingTag)
-        {
-            int count = 0;
-            int currentIndex = 0;
-
-            while ((currentIndex = text.IndexOf(inputTag, currentIndex)) != -1)
-            {
-                count++;
-
-                if (count % 2 != 0)
-                {
-                    var prepend = outputOpeningTag;
-                    text = text.Insert(currentIndex, prepend);
-                    currentIndex += prepend.Length + inputTag.Length;
-                }
-                else
-                {
-                    var append = outputClosingTag;
-                    text = text.Insert(currentIndex, append);
-                    currentIndex += append.Length + inputTag.Length;
-                }
-            }
-
-            return text.Replace(inputTag, string.Empty);
-        }
+        return text.Replace(inputTag, string.Empty);
     }
 }

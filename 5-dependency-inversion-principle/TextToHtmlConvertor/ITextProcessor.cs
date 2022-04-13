@@ -1,7 +1,6 @@
-﻿namespace TextToHtmlConvertor
+﻿namespace TextToHtmlConvertor;
+
+public interface ITextProcessor
 {
-    public interface ITextProcessor
-    {
-        string ConvertText(string inputText);
-    }
+    string ConvertText(string inputText);
 }
