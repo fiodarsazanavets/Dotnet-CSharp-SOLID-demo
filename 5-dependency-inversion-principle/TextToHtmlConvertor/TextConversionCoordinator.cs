@@ -1,16 +1,9 @@
 ﻿namespace TextToHtmlConvertor;
 
-public class TextConversionCoordinator
+public class TextConversionCoordinator(
+    IFileProcessor fileProcessor, 
+    IMdTextProcessor textProcessor)
 {
-    private readonly IFileProcessor fileProcessor;
-    private readonly IMdTextProcessor textProcessor;
-
-    public TextConversionCoordinator(IFileProcessor fileProcessor, IMdTextProcessor textProcessor)
-    {
-        this.fileProcessor = fileProcessor;
-        this.textProcessor = textProcessor;
-    }
-
     public ConversionStatus ConvertText()
     {
         var status = new ConversionStatus();

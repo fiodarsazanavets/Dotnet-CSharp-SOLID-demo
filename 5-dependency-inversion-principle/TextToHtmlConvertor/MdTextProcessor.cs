@@ -1,14 +1,7 @@
 ﻿namespace TextToHtmlConvertor;
 
-public class MdTextProcessor : TextProcessor, IMdTextProcessor
+public class MdTextProcessor(Dictionary<string, (string, string)> tagsToReplace) : TextProcessor, IMdTextProcessor
 {
-    private readonly Dictionary<string, (string, string)> tagsToReplace;
-
-    public MdTextProcessor(Dictionary<string, (string, string)> tagsToReplace)
-    {
-        this.tagsToReplace = tagsToReplace;
-    }
-
     public string ConvertMdText(string inputText)
     {
         var processedText = base.ConvertText(inputText);
@@ -24,7 +17,7 @@ public class MdTextProcessor : TextProcessor, IMdTextProcessor
         return processedText;
     }
 
-    private int CountStringOccurrences(string text, string pattern)
+    private static int CountStringOccurrences(string text, string pattern)
     {
         int count = 0;
         int currentIndex = 0;
@@ -36,7 +29,7 @@ public class MdTextProcessor : TextProcessor, IMdTextProcessor
         return count;
     }
 
-    private string ApplyTagReplacement(string text, string inputTag, string outputOpeningTag, string outputClosingTag)
+    private static string ApplyTagReplacement(string text, string inputTag, string outputOpeningTag, string outputClosingTag)
     {
         int count = 0;
         int currentIndex = 0;

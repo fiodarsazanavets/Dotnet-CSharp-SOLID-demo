@@ -3,12 +3,13 @@ using System.Text.RegularExpressions;
 
 namespace TextToHtmlConvertor;
 
-public class TextProcessor
+public partial class TextProcessor
 {
     public virtual string ConvertText(string inputText)
     {
-        var paragraphs = Regex.Split(inputText, @"(\r\n?|\n)")
-                            .Where(p => p.Any(char.IsLetterOrDigit));
+        var paragraphs = MyRegex()
+            .Split(inputText)
+            .Where(p => p.Any(char.IsLetterOrDigit));
 
         var sb = new StringBuilder();
 
@@ -24,4 +25,7 @@ public class TextProcessor
 
         return sb.ToString();
     }
+
+    [GeneratedRegex(@"(\r\n?|\n)")]
+    private static partial Regex MyRegex();
 }

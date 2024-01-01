@@ -1,10 +1,9 @@
-﻿using System.Linq;
-using System.Text;
+﻿using System.Text;
 using System.Text.RegularExpressions;
 
 namespace TextToHtmlConvertor;
 
-public class TextProcessor
+public partial class TextProcessor
 {
     private readonly FileProcessor fileProcessor;
 
@@ -17,8 +16,9 @@ public class TextProcessor
     {
         var inputText = fileProcessor.ReadAllText();
 
-        var paragraphs = Regex.Split(inputText, @"(\r\n?|\n)")
-                            .Where(p => p.Any(char.IsLetterOrDigit));
+        var paragraphs = MyRegex()
+            .Split(inputText)
+            .Where(p => p.Any(char.IsLetterOrDigit));
 
         var sb = new StringBuilder();
 
@@ -33,4 +33,7 @@ public class TextProcessor
         sb.AppendLine("<br/>");
         fileProcessor.WriteToFile(sb.ToString());
     }
+
+    [GeneratedRegex(@"(\r\n?|\n)")]
+    private static partial Regex MyRegex();
 }
