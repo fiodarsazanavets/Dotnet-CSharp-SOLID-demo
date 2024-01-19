@@ -1,27 +1,21 @@
-﻿using System.IO;
+﻿using System.Web;
 
 namespace TextToHtmlConvertor;
 
-public class FileProcessor
+public class FileProcessor(string fullFilePath)
 {
-    private readonly string fullFilePath;
-
-    public FileProcessor(string fullFilePath)
-    {
-        this.fullFilePath = fullFilePath;
-    }
-
     public string ReadAllText()
     {
-        return System.Web.HttpUtility.HtmlEncode(File.ReadAllText(fullFilePath));
+        return HttpUtility.HtmlEncode(File.ReadAllText(fullFilePath));
     }
 
     public void WriteToFile(string text)
     {
-        var outputFilePath = Path.GetDirectoryName(fullFilePath) + Path.DirectorySeparatorChar +
+        string outputFilePath = Path.GetDirectoryName(fullFilePath) + 
+            Path.DirectorySeparatorChar +
             Path.GetFileNameWithoutExtension(fullFilePath) + ".html";
 
-        using var file = new StreamWriter(outputFilePath);
+        using StreamWriter file = new(outputFilePath);
         file.Write(text);
     }
 }

@@ -3,7 +3,7 @@
 try
 {
     Console.WriteLine("Please specify the file to convert to HTML.");
-    var fullFilePath = Console.ReadLine();
+    var fullFilePath = Console.ReadLine() ?? string.Empty;
     var fileProcessor = new FileProcessor(fullFilePath);
     var tagsToReplace = new Dictionary<string, (string, string)>
     {
